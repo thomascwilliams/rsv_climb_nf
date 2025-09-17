@@ -1,4 +1,4 @@
-process beast {
+process beast_gpu {
 
     container 'community.wave.seqera.io/library/beagle-lib_beast:71d8ea6f44154912'
     publishDir "${params.outdir}/", mode: 'copy' // Publish final report to local directory specified in params.config
@@ -26,6 +26,27 @@ process beast {
     """
 }
 
+process beast_cpu {
+
+    container 'community.wave.seqera.io/library/beagle-lib_beast:71d8ea6f44154912'
+    publishDir "${params.outdir}/", mode: 'copy' // Publish final report to local directory specified in params.config
+
+    cpus 8
+    memory 32.GB
+
+    input:
+        path (input_xml)
+        
+    output:
+        path("*.txt")
+        path("*.chkpt")
+        
+    script:
+    """
+    beast -threads ${task.cpus} ${input_xml}
+    """
+}
+
 workflow  {
 
     input_file = file(params.input, type: "file", checkIfExists:true)
@@ -33,5 +54,9 @@ workflow  {
         .fromPath(input_file)
         .set { input_ch }
 
-    beast(input_ch)
+    if (params.use_gpu) {
+        beast_gpu(input_ch)
+    } else {
+        beast_cpu(input_ch)         
+    }
 }
