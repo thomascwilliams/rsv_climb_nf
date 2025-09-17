@@ -1,6 +1,7 @@
 process beast {
 
     container 'community.wave.seqera.io/library/beagle-lib_beast:71d8ea6f44154912'
+    publishDir "${params.outdir}/", mode: 'copy' // Publish final report to local directory specified in params.config
 
     label "gpu"
     // Targetting g5.2xlarge (8 CPU, 32 GB, 1 A10G) and g5.12xlarge (64 CPU, 192 GB, 4 A10G)
@@ -22,4 +23,14 @@ process beast {
     """
     beast -beagle_GPU -beagle_SSE -threads ${task.cpus} ${input_xml}
     """
+}
+
+workflow  {
+
+    input_file = file(params.input, type: "file", checkIfExists:true)
+    Channel
+        .fromPath(input_file)
+        .set { input_ch }
+
+    beast(input_ch)
 }
