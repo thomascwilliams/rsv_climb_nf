@@ -6,8 +6,8 @@ process beast_gpu {
     label "gpu"
     // Targetting g5.2xlarge (8 CPU, 32 GB, 1 A10G) and g5.12xlarge (64 CPU, 192 GB, 4 A10G)
     accelerator 1 // further configuration should be overloaded using withLabel:gpu
-    cpus 8
-    memory 32.GB
+    cpus 1
+    memory 2.GB
 
     input:
         path (input_xml)
@@ -31,8 +31,8 @@ process beast_cpu {
     container 'community.wave.seqera.io/library/beagle-lib_beast:71d8ea6f44154912'
     publishDir "${params.outdir}/", mode: 'copy' // Publish final report to local directory specified in params.config
 
-    cpus 8
-    memory 32.GB
+    cpus 1
+    memory 2.GB
 
     input:
         path (input_xml)
