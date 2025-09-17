@@ -22,7 +22,7 @@ process beast_gpu {
         log.warn "Non-local workflow execution detected but GPU tasks are currently configured to run in serial, perhaps you should be using '-profile discrete_gpus' to parallelise GPU tasks for better performance?"
     }
     """
-    beast -beagle_GPU -beagle_SSE -threads ${task.cpus} ${input_xml}
+    beast -beagle_GPU -threads ${task.cpus} ${input_xml}
     """
 }
 
@@ -43,7 +43,7 @@ process beast_cpu {
         
     script:
     """
-    beast -threads ${task.cpus} ${input_xml}
+    beast -beagle_SSE -threads ${task.cpus} ${input_xml}
     """
 }
 
