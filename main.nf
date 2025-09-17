@@ -13,7 +13,8 @@ process beast {
         path (input_xml)
         
     output:
-        val("success")
+        path("*.txt")
+        path("*.chkpt")
         
     script:
     // we can't set maxForks dynamically, but we can detect it might be wrong!
