@@ -15,6 +15,7 @@ process beast_gpu {
     output:
         path("*.txt")
         path("*.chkpt")
+        path("beagle_info.txt", emit: beagle_info)
         
     script:
     // we can't set maxForks dynamically, but we can detect it might be wrong!
@@ -22,6 +23,7 @@ process beast_gpu {
         log.warn "Non-local workflow execution detected but GPU tasks are currently configured to run in serial, perhaps you should be using '-profile discrete_gpus' to parallelise GPU tasks for better performance?"
     }
     """
+    beast -beagle_info > "beagle_info.txt"
     beast -beagle_GPU -threads ${task.cpus} ${input_xml}
     """
 }
@@ -40,9 +42,11 @@ process beast_cpu {
     output:
         path("*.txt")
         path("*.chkpt")
-        
+        path("beagle_info.txt", emit: beagle_info)
+
     script:
     """
+    beast -beagle_info > "beagle_info.txt"
     beast -beagle_SSE -threads ${task.cpus} ${input_xml}
     """
 }
